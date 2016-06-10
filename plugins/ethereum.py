@@ -46,3 +46,11 @@ def korbit_status(message):
     current_price = int(current_price_str)
 
     message.send('KORBIT 이더리움 현재가 : %d원' % current_price)
+
+
+@respond_to('coinone')
+def coinone_status(message):
+    response = requests.get('https://api.coinone.co.kr/ticker/?type=ETH')
+    data = response.json()
+    response.close()
+    message.send('COINONE 이더리움 현재가 : %s원' % data['last'])
