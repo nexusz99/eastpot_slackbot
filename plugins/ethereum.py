@@ -54,3 +54,14 @@ def coinone_status(message):
     data = response.json()
     response.close()
     message.send('COINONE 이더리움 현재가 : %s원' % data['last'])
+
+
+@respond_to('브리핑')
+def eth_breifing(message):
+    mining_status(message)
+    message.send('------------')
+    gpu_temperature(message)
+    message.send('------------')
+    korbit_status(message)
+    message.send('------------')
+    coinone_status(message)
