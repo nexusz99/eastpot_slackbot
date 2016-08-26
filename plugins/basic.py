@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from slackbot.bot import respond_to
+from slackbot.bot import respond_to, listen_to
 import re
 
 
@@ -16,3 +16,10 @@ def help(message):
           "gpu : GPU 상태"
     message.send(msg)
 
+
+@listen_to('노예야')
+def hey_bot(message):
+    if message.body['user'] == 'U1AQ7QS1Z':
+        message.send("예 주인님")
+    else:
+        message.reply("넌 뭐냐")

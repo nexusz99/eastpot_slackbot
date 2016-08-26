@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from slackbot.bot import respond_to
+from slackbot.bot import respond_to, listen_to
 import re
 import json
 import requests
@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup as Soup
 
 @respond_to('mining', re.IGNORECASE)
 def mining_status(message):
-    url = 'http://ethermine.org/api/miner/eb4a5b722c31a6df09102c893100930f3a7e834c'
+    url = 'http://ethermine.org/api/miner/71694c8f184b2133dd080c3dcb8e726e00194687'
     r = requests.get(url=url)
     data = r.json()
     ch = message.channel
@@ -42,7 +42,7 @@ def korbit_status(message):
     order = soup.select_one('div[data-react-class=MarketDataBlock]')
     props_str = order['data-react-props']
     props = json.loads(props_str)
-    current_price_str = props['market_data']['korbit_current_eth_price']
+    current_price_str = props['market_data']['last_price']
     current_price = int(current_price_str)
 
     message.send('KORBIT 이더리움 현재가 : %d원' % current_price)
@@ -56,6 +56,21 @@ def coinone_status(message):
     message.send('COINONE 이더리움 현재가 : %s원' % data['last'])
 
 
+@listen_to('브리핑')
+def eth_breifing(message):
+    mining_status(message)
+    message.send('------------')
+    gpu_temperature(message)
+    message.send('------------')
+    korbit_status(message)
+    message.send('------------')
+    coinone_status(message)
+    message.send('------------')
+    dao_price(message)
+    message.send('------------')
+    ether_dollar_price(message)
+
+
 @respond_to('브리핑')
 def eth_breifing(message):
     mining_status(message)
@@ -65,3 +80,43 @@ def eth_breifing(message):
     korbit_status(message)
     message.send('------------')
     coinone_status(message)
+    message.send('------------')
+    dao_price(message)
+    message.send('------------')
+    ether_dollar_price(message)
+
+
+@respond_to('시장가')
+def respond_market_price(message):
+    korbit_status(message)
+    message.send('------------')
+    coinone_status(message)
+    message.send('------------')
+    dao_price(message)
+    message.send('------------')
+    ether_dollar_price(message)
+
+
+@listen_to('시장가')
+def listen_market_price(message):
+    korbit_status(message)
+    message.send('------------')
+    coinone_status(message)
+    message.send('------------')
+    dao_price(message)
+    message.send('------------')
+    ether_dollar_price(message)
+
+
+def dao_price(message):
+    response = requests.get('https://api.coinmarketcap.com/v1/ticker/the-dao')
+    data = response.json()
+    price = data[0]['price_usd']
+    message.send('DAO 현재 가격 : $ %f' % float(price))
+
+
+def ether_dollar_price(message):
+    response = requests.get('https://api.coinmarketcap.com/v1/ticker/ethereum/')
+    data = response.json()
+    price = data[0]['price_usd']
+    message.send('해외 이더리움 가격 : $ %f' % float(price))
