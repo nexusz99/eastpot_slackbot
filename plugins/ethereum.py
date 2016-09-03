@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup as Soup
 
 @respond_to('mining', re.IGNORECASE)
 def mining_status(message):
-    url = 'http://ethermine.org/api/miner/71694c8f184b2133dd080c3dcb8e726e00194687'
+    url = 'http://ethermine.org/api/miner_new/71694c8f184b2133dd080c3dcb8e726e00194687'
     r = requests.get(url=url)
     data = r.json()
     ch = message.channel
